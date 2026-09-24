@@ -1,0 +1,142 @@
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage[a4paper,top=1.5cm,bottom=1.5cm,left=2cm,right=2cm,marginparwidth=1.75cm]{geometry}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{titling}
+\pagestyle{empty}
+
+% Change the vertical space before the title
+\setlength{\droptitle}{-2em} 
+% Change the space after the title (removes default spacing)
+\posttitle{\par\end{center}} 
+
+\title{Ball and Beam Experiment: Prelab Questions}
+\author{Allan Wu (23810308) -- Group 3}
+\date{\today{} -- Week 9, Thursday 10 am}
+
+\begin{document}
+
+\maketitle{}
+
+\section*{Background}
+
+\subsection*{Time-Domain Specifications}
+Specified steady-state error, 0.04\% settling time, and percentage overshoot:
+\begin{align*}
+|e_{ss}| &\leq 0.005 \mathrm{ m}\\
+t_s &= 3.5 \mathrm{ s}\\
+PO &= 10.0 \mathrm{\%}
+\end{align*}
+
+\subsection*{Key Equations}
+Equation of motion and mass moment of inertia for the ball (Equation 2.18):
+\begin{equation*}
+\frac{d^2}{dt^2} x(t) = \frac{m_b g\,r_{arm}{r_b}^2 }{L_{beam}\left(m_b {r_b}^2 + J_b\right)} \theta_l(t) \qquad J_b = \frac{2 m_b {r_b}^2}{5} 
+\end{equation*}
+
+Standard second-order system transfer function (Equation 2.39):
+\begin{equation*}
+\frac{X(s)}{X_d(s)} = \frac{{\omega_n}^2}{s^2 + 2 \zeta \omega_n + {\omega_n}^2} 
+\end{equation*}
+
+Peak time (Equation 2.30) and percent overshoot (Equation 2.31):
+\begin{equation*}
+t_p = \frac{\pi}{\omega_n \sqrt{1 - \zeta^2}} \qquad PO = 100\;\exp \left(\frac{-\pi \zeta}{\sqrt{1 - \zeta ^2}} \right)
+\end{equation*}
+
+Ideal PD control design parameters (Equation 2.40) and (Equation 2.41):
+\begin{equation*}
+z = \frac{{\omega_n}^2}{K_{bb}K_c} \qquad K_c = \frac{2 \zeta \omega_n}{K_{bb}} 
+\end{equation*}
+
+Practical PD control, $\omega_f = 6.28 \mathrm{ \, rad/s}$. Characteristic equation for closed-loop (Equation 2:52):
+\begin{equation*}
+s^3 + s^2 \omega_f + (K_{bb}K_c \omega_f + K_{bb}K_c z)s + K_{bb} K_c z \omega_f
+\end{equation*}
+
+Location of compensator zero, pole and the pole time constant (Equations 2.48, 2.49, 2.54):
+\begin{equation*}
+z_c = \frac{-z \omega_f}{z+\omega_f} \qquad p_c = -\omega_f \qquad T_p = \frac{1}{\omega_f - 2 \zeta \omega_n} 
+\end{equation*}
+
+\clearpage{}
+\subsection*{BB01 System Specifications}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{clcc}\toprule
+Symbol      &Description    &MATLAB Variable    &Value \\ \midrule
+$L_{beam}$  &Beam length    &\texttt{L\_beam}   &0.4255 m \\
+$r_{arm}$   &Gear shaft to joint &\texttt{r\_arm}    &0.0254 m \\
+$r_b$       &Radius of ball &\texttt{r\_ball}   &0.0127 m \\
+$m_b$       &Mass of ball   &\texttt{m\_ball}   &0.064 kg \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section*{Question 1}
+The mass moment of inertia:
+\begin{equation*}
+J_b = \frac{2(0.064)({0.0127}^2)}{5} = 4.1290\times 10^{-6} \mathrm{\;kg\cdot m^2} 
+\end{equation*}
+
+We substitute values into Equation 2.18 to get the constant term $K_{bb}$:
+\begin{equation*}
+K_{bb} = \frac{(0.064)(9.81)(0.0254)({0.0127}^2)}{0.4255\left(0.064 \,(0.0127)^2 + 4.129\cdot10^{-6}\right)} = 0.4183 \mathrm{\;m / s^2\!/rad} 
+\end{equation*}
+
+\section*{Question 5}
+Rearranging Equation 2.31 and using $PO=10.0$\%, the required damping ratio is:
+\begin{equation*}
+\ln^2 \left(\frac{PO}{100}\right) = \frac{\pi^2 \zeta^2}{1-\zeta^2} \quad \therefore \zeta = \sqrt{\frac{\ln^2 \left(\frac{PO}{100}\right)}{\pi^2 + \ln^2 \left(\frac{PO}{100}\right)}} = 0.5912 
+\end{equation*}
+
+Then rearrange Equation 2.30 and substitute in $t_p = 3.5$:
+\begin{equation*}
+{t_p}^2 = \frac{\pi^2}{\omega_n^2 \left( 1 - \zeta^2 \right)} \quad \therefore \omega_n = \sqrt{\frac{\pi^2}{t_p^2 \left(1-\zeta^2\right)}} = 1.1129 \mathrm{\; rad/s} 
+\end{equation*}
+
+\section*{Question 11}
+The required compensator gain using Equation 2.41:
+\begin{equation*}
+K_c = \frac{2(0.5912)(1.1129)}{0.4183} = 3.1456 \mathrm{\; s/m} 
+\end{equation*}
+
+The location of the zero using Equation 2.40:
+\begin{equation*}
+z = \frac{1.1129^2}{0.4183(3.1456)} = 0.9413 \mathrm{\; s^{-1}}
+\end{equation*}
+
+\section*{Question 12}
+For the practical PD controller we set a high-pass corner frequency $\omega_f = 2\pi \mathrm{ \, rad/s}$. Comparing the $s^0$ and $s^1$ terms in Equation 2.52 and Equation 2.31:
+\begin{equation*}
+K_{bb} K_c z = \omega_n^2 \qquad K_{bb} K_c \left(1 + \frac{z}{\omega_f} \right) = 2\zeta \omega_n  
+\end{equation*}
+
+We rearrange terms to find the formula for $K_c$:
+\begin{equation*}
+K_c = \frac{2\zeta \omega_n - \omega_n^2 / 2\pi}{K_{bb}} = \frac{2(0.5912)(1.1129) - (1.1129^2)/2\pi}{0.4183} = 2.6743 \mathrm{\, s/m}
+\end{equation*}
+
+Then we can get:
+\begin{equation*}
+z = \frac{\omega_n^2}{K_{bb}K_{c}} = \frac{1.1129^2}{0.4183(2.6743)}=1.1071 \mathrm{\; s^{-1}}
+\end{equation*}
+
+The location of the zero is:
+\begin{equation*}
+z_c = \frac{-z \omega_f}{z + \omega_f} 
+\end{equation*}
+
+We use Equation 2.54 to determine the pole time constant:
+\begin{equation*}
+T_p = \frac{1}{\omega_f - 2 \zeta \omega_n} = \frac{1}{2\pi - 2(0.5192)(1.1129)} = 0.2013 \mathrm{\,s} 
+\end{equation*}
+
+\end{document}
