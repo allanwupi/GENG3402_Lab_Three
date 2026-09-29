@@ -32,22 +32,22 @@ function plot_position_theta(x_matfile, theta_matfile)
     box on;
     hold on;
     title('Simulated ideal PD with no servo dynamics');
-    xlabel('Time (seconds)');
+    xlabel('Time (s)');
     grid;
     plot(t, setpoint, 'Color', 'black', 'LineStyle', '-.', 'LineWidth', 0.75);
     plot(t, ball_pos, 'Color', 'black', 'LineStyle', '-', 'LineWidth', 1);
-    ylabel('Position (metres)');
+    ylabel('Position (cm)');
     ylim([-8 8]);
     legend({'Setpoint Position', 'Simulated Ball Position'});
     nexttile;
     colororder({'k', 'r'}); % Override axes colors
     yyaxis left;
     plot(t, ball_pos, 'Color', 'black', 'LineStyle', '-', 'LineWidth', 0.75);
-    ylabel('Position (metres)');
+    ylabel('Position (cm)');
     ylim([-8 8]);
     yyaxis right;
     plot(t, servo_angle, 'Color', 'red', 'LineWidth', 1);
-    ylabel('Load angle (radians)');
+    ylabel('Load angle (rads)');
     grid;
 end
 
