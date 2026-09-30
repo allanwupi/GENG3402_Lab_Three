@@ -4,22 +4,47 @@
 
 %% Pre-lab values
 Kbb = 0.4183;
-Kc = 3.1456;
-z = 0.9413;
+prelab_Kc = 3.1456;
+prelab_z = 0.9413;
 
-function plot_root_locus(Kbb, Kc, z)
+% Tuned values for 8%
+Kc = 2.94573254066;
+z = 1.07651403732;
+
+function plot_root_locus_ideal(Kbb, Kc, z)
     % Transfer function for BB01 (ideal PD control) is
     % Kbb Kc z / (s^2 + Kbb Kc s + Kbb Kc z)
     s = tf('s');
     T = Kbb*Kc*z / (s^2 + Kbb*Kc*s + Kbb*Kc*z);
     figure;
     rlocusplot(T);
-    % Edit title manually in figure window
-    % title('Root locus for ball-beam system with ideal PD and no servo dynamics')
+    title('Root locus for ball-beam system with ideal PD and no servo dynamics')
     hold on;
     p = pole(T);
     % Label pole locations
     for i = 1:2
+        text(real(p(i)), imag(p(i)), ...
+        sprintf('  s_%d = %.3f%+.3fj', i, real(p(i)), imag(p(i))));
+    end
+    hold off;
+    sgrid;
+end
+
+function plot_root_locus_practical(Kbb, Kc, z, wf)
+    if nargin < 4
+        wf = 2*pi;
+    end
+    % Transfer function for BB01 (ideal PD control) is
+    % s^3 + s^2 * wf + (Kbb * Kc * wf + Kbb * Kc * z) * s + Kbb * Kc * z * wf
+    s = tf('s');
+    T = 1 / (s^3 + s^2 * wf + (Kbb * Kc * wf + Kbb * Kc * z) * s + Kbb * Kc * z * wf);
+    figure;
+    rlocusplot(T);
+    title('Root locus for ball-beam system with practical PD (tuned for PO=8%)')
+    hold on;
+    p = pole(T);
+    % Label pole locations
+    for i = 1:3
         text(real(p(i)), imag(p(i)), ...
         sprintf('  s_%d = %.3f%+.3fj', i, real(p(i)), imag(p(i))));
     end
@@ -144,7 +169,10 @@ end
 
 %% Begin main script
 % Plot root locus for ideal PD controller
-plot_root_locus(Kbb, Kc, z);
+plot_root_locus_ideal(Kbb, prelab_Kc, prelab_z);
+
+% Plot root locus for practical PD controller
+plot_root_locus_practical(Kbb, Kc, z);
 
 % Plot for section 4.1.1 step 9
 plot_position_theta(-1, 25.0, ...
